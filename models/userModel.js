@@ -44,6 +44,11 @@ const userShcema = new mongoose.Schema({
             message: 'A roll must be one of these roles [user, guide, lead-guide, admin, null]'
         },
         default: 'user' 
+    },
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
     }
 });
 
@@ -53,6 +58,11 @@ userShcema.pre('save', async function(next) {
     this.passwordConfirm = undefined;
     next();
     
+});
+
+userShcema.pre(/^find/, function(next) {
+    this.find({active: {$ne: false}});
+    next();
 });
 
 userShcema.methods.changePasswordAfter = function(JWTimestabp) {
