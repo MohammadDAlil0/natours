@@ -31,7 +31,13 @@ router.route('/')
 
 router.route('/:id')
     .get(tourControllers.getTour)
-    .patch(authControllers.protect, authControllers.restrictTo('admin', 'lead-guide'), tourControllers.updateTour)
+    .patch(
+        authControllers.protect, 
+        authControllers.restrictTo('admin', 'lead-guide'), 
+        tourControllers.uploadTourImages,
+        tourControllers.resizeTourImages,
+        tourControllers.updateTour
+    )
     .delete(authControllers.protect, authControllers.restrictTo('admin', 'lead-guide'), tourControllers.deleteTour);
 
 module.exports = router;

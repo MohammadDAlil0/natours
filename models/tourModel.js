@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema({
   name: {
@@ -11,6 +12,7 @@ const tourSchema = new mongoose.Schema({
     minlength: [10, 'A tour must have more or equal than 10 characters!'],
     //validate: [validator.isAlpha, 'A tour\'s name must have characters only!']
   },
+  slug: String,
   duration: {
     type: Number,
     required: [true, 'A tour must have a duration']
@@ -104,7 +106,6 @@ const tourSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }]
-
 }, {
   toJSON: {virtuals: true},
   toObject: {virtuals: true}
@@ -124,10 +125,9 @@ tourSchema.virtual('reviews', {
   foreignField: 'tour',
   localField: '_id'
 });
-
-//Documnets middleware: run before .save() and .create()
-tourSchema.pre('save', (next) => {
-  //this run before save
+// DOCUMENT MIDDLEWARE: runs before .save() and .create()
+tourSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, { lower: true });
   next();
 });
 

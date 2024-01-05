@@ -16,7 +16,8 @@ const userShcema = new mongoose.Schema({
         validate: [validator.isEmail, 'Please provide a valid email']
     },
     photo: {
-        type: String
+        type: String,
+        default: 'default.jpg'
     },
     password: {
         type: String,
@@ -64,6 +65,7 @@ userShcema.pre(/^find/, function(next) {
     this.find({active: {$ne: false}});
     next();
 });
+
 
 userShcema.methods.changePasswordAfter = function(JWTimestabp) {
     if (this.passwordChangedAt) {
